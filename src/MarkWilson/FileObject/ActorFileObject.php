@@ -95,7 +95,7 @@ class ActorFileObject extends \SplFileObject
                 throw new \RuntimeException('Line ' . (self::key() + 1) . ' does not match expected pattern.');
             }
 
-            $actor = trim($matches[1]);
+            $actor = utf8_encode(trim($matches[1]));
             $titles[] = trim($matches[2]);
 
             parent::next();
@@ -174,6 +174,6 @@ class ActorFileObject extends \SplFileObject
         // find first ( and remove everything after (and including) it
         $title = substr($title, 0, strpos($title, '(') - 1);
 
-        return preg_replace('/(^")|("$)/', '', $title);
+        return utf8_encode(preg_replace('/(^")|("$)/', '', $title));
     }
 }
