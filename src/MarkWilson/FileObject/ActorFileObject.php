@@ -4,10 +4,26 @@ namespace MarkWilson\FileObject;
 
 use MarkWilson\Model\Actor;
 
+/**
+ * Extension of SplFileObject to get actor objects
+ *
+ * @package MarkWilson\FileObject
+ * @author  Mark Wilson <mark@89allport.co.uk>
+ */
 class ActorFileObject extends \SplFileObject
 {
+    /**
+     * Current actor data
+     *
+     * @var Actor
+     */
     private $currentData;
 
+    /**
+     * Constructor.
+     *
+     * @param string $fileName Import file
+     */
     public function __construct($fileName)
     {
         call_user_func_array(array('parent', '__construct'), func_get_args());
@@ -39,10 +55,13 @@ class ActorFileObject extends \SplFileObject
             parent::next();
         }
 
+        // set up the initial current value
         $this->next();
     }
 
     /**
+     * Get current actor
+     *
      * @return Actor
      */
     public function current()
@@ -50,6 +69,11 @@ class ActorFileObject extends \SplFileObject
         return $this->currentData;
     }
 
+    /**
+     * Find next actor
+     *
+     * @throws \RuntimeException If invalid format is detected
+     */
     public function next()
     {
         parent::next();
@@ -89,6 +113,13 @@ class ActorFileObject extends \SplFileObject
         $this->currentData = new Actor($actor, $titles);
     }
 
+    /**
+     * Check if data is valid
+     *
+     * Checks if SplFileObject is valid and if we've got to the end of the actor data
+     *
+     * @return boolean
+     */
     public function valid()
     {
         $return = parent::valid();
@@ -100,11 +131,23 @@ class ActorFileObject extends \SplFileObject
         return $return;
     }
 
+    /**
+     * Rewind command - not available in this sub-class
+     *
+     * @throws \RuntimeException Always
+     */
     public function rewind()
     {
         throw new \RuntimeException('It is not possible to rewind actor file objects.');
     }
 
+    /**
+     * Detect if we want to use this title or not
+     *
+     * @param string $title Film title
+     *
+     * @return boolean
+     */
     private function filterNonMovies($title)
     {
         // contains an episode reference
@@ -119,6 +162,13 @@ class ActorFileObject extends \SplFileObject
         return true;
     }
 
+    /**
+     * Strip film title down to just the data we want to import
+     *
+     * @param string $title Film title
+     *
+     * @return string
+     */
     private function stripAdditionalData($title)
     {
         // find first ( and remove everything after (and including) it

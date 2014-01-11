@@ -2,7 +2,13 @@
 
 namespace MarkWilson\Model;
 
-class Actor
+/**
+ * Actor value object
+ *
+ * @package MarkWilson\Model
+ * @author  Mark Wilson <mark@89allport.co.uk>
+ */
+final class Actor
 {
     /**
      * Actor's name

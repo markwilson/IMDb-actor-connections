@@ -9,10 +9,26 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Importer of IMDb data
+ *
+ * @package MarkWilson\Command
+ * @author  Mark Wilson <mark@89allport.co.uk>
+ */
 class ImportCommand extends Command
 {
+    /**
+     * Filesystem instance
+     *
+     * @var Filesystem
+     */
     private $fileSystem;
 
+    /**
+     * Constructor.
+     *
+     * @param Filesystem $fileSystem Filesystem instance
+     */
     public function __construct(Filesystem $fileSystem)
     {
         parent::__construct();
@@ -20,6 +36,11 @@ class ImportCommand extends Command
         $this->fileSystem = $fileSystem;
     }
 
+    /**
+     * Configure the command
+     *
+     * @return void
+     */
     protected function configure()
     {
         $this->setName('imdb:import')
@@ -31,6 +52,14 @@ class ImportCommand extends Command
              );
     }
 
+    /**
+     * Execute the import command
+     *
+     * @param InputInterface  $input  User input
+     * @param OutputInterface $output User output
+     *
+     * @return void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $fileName = $input->getArgument('filename');
@@ -50,10 +79,12 @@ class ImportCommand extends Command
 
             $actors = new ActorFileObject($fileName);
 
+            // loop through actors
             while ($actors->valid()) {
                 $actor = $actors->current();
 
                 if ($actor->getTitles()->count() === 0) {
+                    // no need to import actors with no titles
                     $output->writeln('<comment>Skipped actor ' . $actor->getName() . '. No titles found.</comment>');
                 } else {
                     // insert actor into database
@@ -65,6 +96,7 @@ class ImportCommand extends Command
                 $actors->next();
             }
         } catch (\RuntimeException $e) {
+            // handle error output
             $output->writeln('<error>Error: ' . $e->getMessage() . '</error>');
 
             return;
