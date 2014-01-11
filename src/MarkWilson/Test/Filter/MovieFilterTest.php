@@ -102,7 +102,8 @@ class MovieFilterTest extends \PHPUnit_Framework_TestCase
             '15th Annual Critics\' Choice Movie Awards (2010) (TV)  [Himself]',
             'American Empire (2011) {{SUSPENDED}}',
             'Footloose: A Modern Musical (2004) (V)  [Himself]',
-            '"American Gangster" (2006) {Felix Mitchell (#2.6)}  (as Too Short)  [Himself]'
+            '"American Gangster" (2006) {Felix Mitchell (#2.6)}  (as Too Short)  [Himself]',
+            'Testing (' . (date('Y') + 1) . ') [Himself]'
         );
     }
 

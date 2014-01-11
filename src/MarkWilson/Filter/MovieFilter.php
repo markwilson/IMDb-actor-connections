@@ -41,6 +41,11 @@ class MovieFilter
             return false;
         }
 
+        preg_match('/^[^\(]+\(([0-9]{4})\)/', $data, $matches);
+        if (isset($matches[1]) && (int)$matches[1] > date('Y')) {
+            return false;
+        }
+
         return true;
     }
 }
