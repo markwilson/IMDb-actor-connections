@@ -1,0 +1,25 @@
+{
+    "name": "markwilson/actor-connections",
+    "description": "Search actors' connections",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Mark Wilson",
+            "email": "mark@89allport.co.uk"
+        }
+    ],
+    "require": {
+        "symfony/console": "v2.4.1",
+        "symfony/filesystem": "v2.4.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "dev-master",
+        "phpunit/php-code-coverage": "1.3.x-dev",
+        "phpunit/phpunit-mock-objects": "1.3.x-dev"
+    },
+    "autoload": {
+        "psr-0": {
+            "MarkWilson\\": "src/"
+        }
+    }
+}
