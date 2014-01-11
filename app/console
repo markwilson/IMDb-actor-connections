@@ -1,15 +1,4 @@
 #!/usr/bin/env php
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
-use MarkWilson\Command\ImportCommand;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Filesystem\Filesystem;
-
-$fileSystem    = new Filesystem();
-$importCommand = new ImportCommand($fileSystem);
-
-$application = new Application();
-$application->add($importCommand);
-$application->run();
+require_once __DIR__ . '/bootstrap.php';

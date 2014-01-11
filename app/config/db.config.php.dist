@@ -1,0 +1,9 @@
+<?php
+
+return array(
+    'dbname' => '...',
+    'user' => '...',
+    'password' => '...',
+    'host' => '...,
+    'driver' => 'pdo_mysql',
+);
