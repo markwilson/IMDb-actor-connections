@@ -2,6 +2,7 @@
 
 namespace MarkWilson\FileObject;
 
+use MarkWilson\Filter\MovieFilter;
 use MarkWilson\Model\Actor;
 
 /**
@@ -113,7 +114,9 @@ class ActorFileObject extends \SplFileObject
             }
         }
 
-        $titles = array_filter($titles, array($this, 'filterNonMovies'));
+        $filter = new MovieFilter();
+        $titles = $filter->filter($titles);
+
         $titles = array_map(array($this, 'stripAdditionalData'), $titles);
 
         $this->currentData = new Actor($actor, $titles);
@@ -139,27 +142,6 @@ class ActorFileObject extends \SplFileObject
     public function rewind()
     {
         throw new \RuntimeException('It is not possible to rewind actor file objects.');
-    }
-
-    /**
-     * Detect if we want to use this title or not
-     *
-     * @param string $title Film title
-     *
-     * @return boolean
-     */
-    private function filterNonMovies($title)
-    {
-        // contains an episode reference
-        if (preg_match('/^[^\(]+\([^\)]+\)\s+\{/', $title)) {
-            return false;
-        }
-
-        if (preg_match('/^[\(]+\([^\)]+\)\s+\(TV\)/', $title)) {
-            return false;
-        }
-
-        return true;
     }
 
     /**

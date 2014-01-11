@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- http://www.phpunit.de/manual/current/en/appendixes.configuration.html -->
+<phpunit
+        colors                      = "true"
+        convertErrorsToExceptions   = "true"
+        convertNoticesToExceptions  = "true"
+        convertWarningsToExceptions = "true">
+    <testsuites>
+        <testsuite name="IMDb actor connections">
+            <directory>src/MarkWilson/Test</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
