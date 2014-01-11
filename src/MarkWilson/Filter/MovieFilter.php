@@ -36,8 +36,8 @@ class MovieFilter
             return false;
         }
 
-        // contains (TV)
-        if (preg_match('/^[^\(]+\([^\)]+\)\s+\(T?V\)/', $data)) {
+        // contains (TV), (V), or (VG)
+        if (preg_match('/^[^\(]+\([^\)]+\)\s+\((TV|V|VG)\)/', $data)) {
             return false;
         }
 
