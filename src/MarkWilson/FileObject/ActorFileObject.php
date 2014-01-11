@@ -85,6 +85,12 @@ class ActorFileObject extends \SplFileObject
             // current contains actor and title
             $line = parent::current();
 
+            if (preg_match('/^----/', $line)) {
+                $this->currentData = null;
+
+                return;
+            }
+
             if (!preg_match('/^([^\t]+)\t+(.*)$/', $line, $matches)) {
                 throw new \RuntimeException('Line ' . (self::key() + 1) . ' does not match expected pattern.');
             }
@@ -122,13 +128,7 @@ class ActorFileObject extends \SplFileObject
      */
     public function valid()
     {
-        $return = parent::valid();
-
-        if ($return) {
-            $return = !preg_match('/^----/', parent::current());
-        }
-
-        return $return;
+        return (null !== $this->currentData);
     }
 
     /**

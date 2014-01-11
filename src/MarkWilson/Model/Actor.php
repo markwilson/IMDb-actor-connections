@@ -29,9 +29,15 @@ final class Actor
      *
      * @param string $name   Actor's name
      * @param array  $titles Credited titles
+     *
+     * @throws \Exception If no name is provided
      */
     public function __construct($name, array $titles)
     {
+        if ($name === '') {
+            throw new \Exception('No name provided');
+        }
+
         $this->name   = $name;
         $this->titles = $titles;
     }
