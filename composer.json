@@ -10,7 +10,8 @@
     ],
     "require": {
         "symfony/console": "v2.4.1",
-        "symfony/filesystem": "v2.4.1"
+        "symfony/filesystem": "v2.4.1",
+        "doctrine/dbal": "v2.4.2"
     },
     "require-dev": {
         "phpunit/phpunit": "dev-master",
