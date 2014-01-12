@@ -145,8 +145,6 @@ class ImportCommand extends Command
                     // no need to import actors with no titles
                     $this->log($output, '<comment>Skipped actor ' . $actor->getName() . '. No titles found.</comment>');
                 } else {
-                    $actors->next();
-
                     if (!$this->isDryRun($input)) {
                         // insert actor into database
                         $actorId = $this->actorManager->add($actor->getName());
@@ -169,10 +167,6 @@ class ImportCommand extends Command
                     }
 
                     $this->log($output, 'Imported actor ' . $actor->getName() . '. ' . $actor->getTitles()->count() . ' titles.');
-                }
-
-                if ($actor->getName() === 'Perry, Matthew (I)') {
-                    var_dump($actor);
                 }
 
                 $actors->next();
