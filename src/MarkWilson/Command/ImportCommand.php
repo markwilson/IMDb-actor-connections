@@ -88,6 +88,12 @@ class ImportCommand extends Command
                  null,
                  InputOption::VALUE_NONE,
                  'If set, truncates all data'
+             )
+             ->addOption(
+                 'dry-run',
+                 null,
+                 InputOption::VALUE_NONE,
+                 'Dry run'
              );
     }
 
@@ -115,17 +121,19 @@ class ImportCommand extends Command
             }
 
             if ($input->getOption('truncate')) {
-                $output->writeln('Starting truncate.');
+                $this->log($output, 'Starting truncate.');
 
-                // clear the current database
-                $this->castManager->clear();
-                $this->actorManager->clear();
-                $this->movieManager->clear();
+                if ($this->isDryRun($input)) {
+                    // clear the current database
+                    $this->castManager->clear();
+                    $this->actorManager->clear();
+                    $this->movieManager->clear();
+                }
 
-                $output->writeln('Truncate complete.');
+                $this->log($output, 'Truncate complete.');
             }
 
-            $output->writeln('Starting import.');
+            $this->log($output, 'Starting import.');
 
             $actors = new ActorFileObject($fileName);
 
@@ -135,22 +143,36 @@ class ImportCommand extends Command
 
                 if ($actor->getTitles()->count() === 0) {
                     // no need to import actors with no titles
-                    $output->writeln('<comment>Skipped actor ' . $actor->getName() . '. No titles found.</comment>');
+                    $this->log($output, '<comment>Skipped actor ' . $actor->getName() . '. No titles found.</comment>');
                 } else {
                     $actors->next();
 
-                    // insert actor into database
-                    $actorId = $this->actorManager->add($actor->getName());
+                    if ($this->isDryRun($input)) {
+                        // insert actor into database
+                        $actorId = $this->actorManager->add($actor->getName());
+                    } else {
+                        $actorId = 12345;
+                    }
 
                     // insert all titles into database (if not already there)
                     // insert link between actor and title
                     foreach ($actor->getTitles() as $title) {
-                        $movieId = $this->movieManager->add($title);
+                        if ($this->isDryRun($input)) {
+                            $movieId = $this->movieManager->add($title);
+                        } else {
+                            $movieId = 12345;
+                        }
 
-                        $this->castManager->add($actorId, $movieId);
+                        if ($this->isDryRun($input)) {
+                            $this->castManager->add($actorId, $movieId);
+                        }
                     }
 
-                    $output->writeln('Imported actor ' . $actor->getName() . '. ' . $actor->getTitles()->count() . ' titles.');
+                    $this->log($output, 'Imported actor ' . $actor->getName() . '. ' . $actor->getTitles()->count() . ' titles.');
+                }
+
+                if ($actor->getName() === 'Perry, Matthew (I)') {
+                    var_dump($actor);
                 }
 
                 $actors->next();
@@ -163,5 +185,44 @@ class ImportCommand extends Command
         }
 
         $output->writeln('<info>Import complete.</info>');
+    }
+
+    /**
+     * Is it a dry run?
+     *
+     * @param InputInterface $input User input
+     *
+     * @return boolean
+     */
+    private function isDryRun(InputInterface $input)
+    {
+        return $input->getOption('dry-run');
+    }
+
+    /**
+     * Is it quiet mode?
+     *
+     * @param InputInterface $input User input
+     *
+     * @return boolean
+     */
+    private function isQuietMode(InputInterface $input)
+    {
+        return $input->getOption('quiet');
+    }
+
+    /**
+     * Write output log
+     *
+     * @param OutputInterface $output  User output
+     * @param string          $message Log message
+     *
+     * @return void
+     */
+    private function log(OutputInterface $output, $message)
+    {
+        if (!$output->isQuiet()) {
+            $output->writeln($message);
+        }
     }
 }
