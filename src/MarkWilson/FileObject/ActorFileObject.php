@@ -33,7 +33,7 @@ class ActorFileObject extends \SplFileObject
         while (parent::valid()) {
             $line = parent::current();
 
-            if (!preg_match('/^THE ACTORS LIST/', $line)) {
+            if (!preg_match('/^THE (ACTORS|ACTRESSES) LIST/', $line)) {
                 parent::next();
             } else {
                 break;
