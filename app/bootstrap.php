@@ -5,6 +5,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use MarkWilson\Command\ImportCommand;
 use MarkWilson\Command\TruncateCommand;
 use MarkWilson\Command\DisableCommand;
+use MarkWilson\Command\BaconNumberCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Filesystem\Filesystem;
 use MarkWilson\Manager\CastManager;
@@ -27,8 +28,11 @@ $importCommand = new ImportCommand($fileSystem, $castManager, $actorManager, $mo
 $truncateCommand = new TruncateCommand($castManager, $actorManager, $movieManager);
 $disableCommand  = new DisableCommand($actorManager, $movieManager);
 
+$baconCommand = new BaconNumberCommand($connection);
+
 $application = new Application();
 $application->add($importCommand);
 $application->add($truncateCommand);
 $application->add($disableCommand);
+$application->add($baconCommand);
 $application->run();
