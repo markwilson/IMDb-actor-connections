@@ -87,7 +87,8 @@ class MovieFilterTest extends \PHPUnit_Framework_TestCase
     private function getValidData()
     {
         return array(
-            'Valid'
+            'Valid',
+            '17 Again (2009)  [Mike O\'Donnell (Adult)]  <4>'
         );
     }
 
