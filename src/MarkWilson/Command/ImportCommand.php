@@ -126,8 +126,8 @@ class ImportCommand extends Command
                 if (!$this->isDryRun($input)) {
                     $command = $this->getApplication()->find('imdb:truncate');
 
-                    $input = new ArrayInput(array());
-                    $command->run($input, $output);
+                    $truncateInput = new ArrayInput(array('command' => 'imdb:truncate'));
+                    $command->run($truncateInput, $output);
                 }
 
                 $this->log($output, 'Truncate complete.');
