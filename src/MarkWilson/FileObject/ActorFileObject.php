@@ -104,10 +104,6 @@ class ActorFileObject extends \SplFileObject
             while (parent::valid() && trim(parent::current()) !== '') {
                 $line = parent::current();
 
-                if (trim($line) === '') {
-                    break;
-                }
-
                 $titles[] = trim($line);
 
                 parent::next();
