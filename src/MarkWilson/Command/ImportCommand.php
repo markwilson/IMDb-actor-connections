@@ -200,18 +200,6 @@ class ImportCommand extends Command
     }
 
     /**
-     * Is it quiet mode?
-     *
-     * @param InputInterface $input User input
-     *
-     * @return boolean
-     */
-    private function isQuietMode(InputInterface $input)
-    {
-        return $input->getOption('quiet');
-    }
-
-    /**
      * Write output log
      *
      * @param OutputInterface $output  User output
