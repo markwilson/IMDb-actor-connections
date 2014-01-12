@@ -18,16 +18,6 @@ class CastManager extends AbstractManager
     const TABLE_NAME = 'cast';
 
     /**
-     * Clear the cast table
-     *
-     * @return void
-     */
-    public function clear()
-    {
-        parent::clear(self::TABLE_NAME);
-    }
-
-    /**
      * Add a new link between actor and movie
      *
      * @param integer $actorId     Actor DB ID

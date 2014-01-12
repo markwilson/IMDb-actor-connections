@@ -18,16 +18,6 @@ class ActorManager extends AbstractManager
     const TABLE_NAME = 'actors';
 
     /**
-     * Clear actors table
-     *
-     * @return void
-     */
-    public function clear()
-    {
-        parent::clear(self::TABLE_NAME);
-    }
-
-    /**
      * Add a new actor
      *
      * @param string $name Actor name

@@ -18,14 +18,6 @@ class MovieManager extends AbstractManager
     const TABLE_NAME = 'movies';
 
     /**
-     * Clear movie table
-     */
-    public function clear()
-    {
-        parent::clear(self::TABLE_NAME);
-    }
-
-    /**
      * Add a new movie
      *
      * @param string $title Movie title

@@ -13,6 +13,11 @@ use Doctrine\DBAL\Connection;
 abstract class AbstractManager
 {
     /**
+     * Table name - must be overridden
+     */
+    const TABLE_NAME = '';
+
+    /**
      * Database connection
      *
      * @var Connection
@@ -23,10 +28,26 @@ abstract class AbstractManager
      * Constructor.
      *
      * @param Connection $dbConnection Database connection
+     *
+     * @throws \RuntimeException If table name is not set
      */
     public function __construct(Connection $dbConnection)
     {
         $this->dbConnection = $dbConnection;
+
+        if (static::TABLE_NAME === '') {
+            throw new \RuntimeException('Invalid table name');
+        }
+    }
+
+    /**
+     * Clear a table
+     *
+     * @return void
+     */
+    public function clear()
+    {
+        $this->getDbConnection()->exec('SET FOREIGN_KEY_CHECKS=0; TRUNCATE ' . (string)static::TABLE_NAME . '; SET FOREIGN_KEY_CHECKS=1;');
     }
 
     /**
@@ -37,15 +58,5 @@ abstract class AbstractManager
     protected function getDbConnection()
     {
         return $this->dbConnection;
-    }
-
-    /**
-     * Clear a table
-     *
-     * @param string $tableName Table name
-     */
-    protected function clear($tableName)
-    {
-        $this->getDbConnection()->exec('SET FOREIGN_KEY_CHECKS=0; TRUNCATE ' . (string)$tableName . '; SET FOREIGN_KEY_CHECKS=1;');
     }
 }
