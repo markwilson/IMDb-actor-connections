@@ -7,6 +7,7 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Filesystem\Filesystem;
 use MarkWilson\Manager\CastManager;
 use MarkWilson\Manager\ActorManager;
+use MarkWilson\Manager\MovieManager;
 use Doctrine\DBAL;
 
 $connectionParams = require(__DIR__ . '/config/db.config.php');
@@ -16,9 +17,10 @@ $connection = DBAL\DriverManager::getConnection($connectionParams, $dbConfig);
 
 $castManager  = new CastManager($connection);
 $actorManager = new ActorManager($connection);
+$movieManager = new MovieManager($connection);
 
 $fileSystem    = new Filesystem();
-$importCommand = new ImportCommand($fileSystem, $connection, $castManager, $actorManager);
+$importCommand = new ImportCommand($fileSystem, $castManager, $actorManager, $movieManager);
 
 $application = new Application();
 $application->add($importCommand);

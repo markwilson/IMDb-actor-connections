@@ -7,6 +7,7 @@ use Doctrine\DBAL\DBALException;
 use MarkWilson\FileObject\ActorFileObject;
 use MarkWilson\Manager\ActorManager;
 use MarkWilson\Manager\CastManager;
+use MarkWilson\Manager\MovieManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,13 +31,6 @@ class ImportCommand extends Command
     private $fileSystem;
 
     /**
-     * Database connection
-     *
-     * @var Connection
-     */
-    private $dbConnection;
-
-    /**
      * Cast manager
      *
      * @var CastManager
@@ -51,21 +45,28 @@ class ImportCommand extends Command
     private $actorManager;
 
     /**
+     * Movie manager
+     *
+     * @var MovieManager
+     */
+    private $movieManager;
+
+    /**
      * Constructor.
      *
      * @param Filesystem   $fileSystem   Filesystem instance
-     * @param Connection   $dbConnection Database connection
      * @param CastManager  $castManager  Cast manager
      * @param ActorManager $actorManager Actor manager
+     * @param MovieManager $movieManager Movie manager
      */
-    public function __construct(Filesystem $fileSystem, Connection $dbConnection, CastManager $castManager, ActorManager $actorManager)
+    public function __construct(Filesystem $fileSystem, CastManager $castManager, ActorManager $actorManager, MovieManager $movieManager)
     {
         parent::__construct();
 
         $this->fileSystem   = $fileSystem;
-        $this->dbConnection = $dbConnection;
         $this->castManager  = $castManager;
         $this->actorManager = $actorManager;
+        $this->movieManager = $movieManager;
     }
 
     /**
@@ -119,7 +120,7 @@ class ImportCommand extends Command
                 // clear the current database
                 $this->castManager->clear();
                 $this->actorManager->clear();
-                $this->dbConnection->exec('SET FOREIGN_KEY_CHECKS=0; TRUNCATE TABLE movies; SET FOREIGN_KEY_CHECKS=1;');
+                $this->movieManager->clear();
 
                 $output->writeln('Truncate complete.');
             }
@@ -144,13 +145,7 @@ class ImportCommand extends Command
                     // insert all titles into database (if not already there)
                     // insert link between actor and title
                     foreach ($actor->getTitles() as $title) {
-                        try {
-                            $this->dbConnection->insert('movies', array('title' => $title));
-                            $movieId = $this->dbConnection->lastInsertId();
-                        } catch (DBALException $e) {
-                            // possible this was because the key already exists so try and load in the movie
-                            $movieId = $this->dbConnection->fetchColumn('SELECT id FROM movies WHERE title = ?', array($title));
-                        }
+                        $movieId = $this->movieManager->add($title);
 
                         $this->castManager->add($actorId, $movieId);
                     }
