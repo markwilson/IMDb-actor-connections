@@ -4,7 +4,13 @@ namespace MarkWilson\Manager;
 
 use Doctrine\DBAL\Connection;
 
-class SingleKeyManager extends AbstractManager
+/**
+ * Single key abstract database manager
+ *
+ * @package MarkWilson\Manager
+ * @author  Mark Wilson <mark@89allport.co.uk>
+ */
+abstract class SingleKeyManager extends AbstractManager
 {
     /**
      * Table configuration - must be overridden
@@ -26,7 +32,6 @@ class SingleKeyManager extends AbstractManager
             throw new \RuntimeException('Invalid table key');
         }
     }
-
 
     /**
      * Disable record
