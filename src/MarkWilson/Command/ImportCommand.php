@@ -123,7 +123,7 @@ class ImportCommand extends Command
             if ($input->getOption('truncate')) {
                 $this->log($output, 'Starting truncate.');
 
-                if ($this->isDryRun($input)) {
+                if (!$this->isDryRun($input)) {
                     $command = $this->getApplication()->find('imdb:truncate');
 
                     $input = new ArrayInput(array());
@@ -147,7 +147,7 @@ class ImportCommand extends Command
                 } else {
                     $actors->next();
 
-                    if ($this->isDryRun($input)) {
+                    if (!$this->isDryRun($input)) {
                         // insert actor into database
                         $actorId = $this->actorManager->add($actor->getName());
                     } else {
@@ -157,13 +157,13 @@ class ImportCommand extends Command
                     // insert all titles into database (if not already there)
                     // insert link between actor and title
                     foreach ($actor->getTitles() as $title) {
-                        if ($this->isDryRun($input)) {
+                        if (!$this->isDryRun($input)) {
                             $movieId = $this->movieManager->add($title);
                         } else {
                             $movieId = 12345;
                         }
 
-                        if ($this->isDryRun($input)) {
+                        if (!$this->isDryRun($input)) {
                             $this->castManager->add($actorId, $movieId);
                         }
                     }
