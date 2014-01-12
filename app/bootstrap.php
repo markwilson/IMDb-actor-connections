@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use MarkWilson\Command\ImportCommand;
+use MarkWilson\Command\TruncateCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Filesystem\Filesystem;
 use MarkWilson\Manager\CastManager;
@@ -22,6 +23,9 @@ $movieManager = new MovieManager($connection);
 $fileSystem    = new Filesystem();
 $importCommand = new ImportCommand($fileSystem, $castManager, $actorManager, $movieManager);
 
+$truncateCommand = new TruncateCommand($castManager, $actorManager, $movieManager);
+
 $application = new Application();
 $application->add($importCommand);
+$application->add($truncateCommand);
 $application->run();

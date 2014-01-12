@@ -2,13 +2,13 @@
 
 namespace MarkWilson\Command;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use MarkWilson\FileObject\ActorFileObject;
 use MarkWilson\Manager\ActorManager;
 use MarkWilson\Manager\CastManager;
 use MarkWilson\Manager\MovieManager;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -124,10 +124,10 @@ class ImportCommand extends Command
                 $this->log($output, 'Starting truncate.');
 
                 if ($this->isDryRun($input)) {
-                    // clear the current database
-                    $this->castManager->clear();
-                    $this->actorManager->clear();
-                    $this->movieManager->clear();
+                    $command = $this->getApplication()->find('imdb:truncate');
+
+                    $input = new ArrayInput(array());
+                    $command->run($input, $output);
                 }
 
                 $this->log($output, 'Truncate complete.');
