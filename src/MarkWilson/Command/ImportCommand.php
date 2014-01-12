@@ -5,6 +5,7 @@ namespace MarkWilson\Command;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use MarkWilson\FileObject\ActorFileObject;
+use MarkWilson\Manager\ActorManager;
 use MarkWilson\Manager\CastManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -43,19 +44,28 @@ class ImportCommand extends Command
     private $castManager;
 
     /**
+     * Actor manager
+     *
+     * @var ActorManager
+     */
+    private $actorManager;
+
+    /**
      * Constructor.
      *
-     * @param Filesystem  $fileSystem   Filesystem instance
-     * @param Connection  $dbConnection Database connection
-     * @param CastManager $castManager  Cast manager
+     * @param Filesystem   $fileSystem   Filesystem instance
+     * @param Connection   $dbConnection Database connection
+     * @param CastManager  $castManager  Cast manager
+     * @param ActorManager $actorManager Actor manager
      */
-    public function __construct(Filesystem $fileSystem, Connection $dbConnection, CastManager $castManager)
+    public function __construct(Filesystem $fileSystem, Connection $dbConnection, CastManager $castManager, ActorManager $actorManager)
     {
         parent::__construct();
 
         $this->fileSystem   = $fileSystem;
         $this->dbConnection = $dbConnection;
         $this->castManager  = $castManager;
+        $this->actorManager = $actorManager;
     }
 
     /**
@@ -108,7 +118,7 @@ class ImportCommand extends Command
 
                 // clear the current database
                 $this->castManager->clear();
-                $this->dbConnection->exec('SET FOREIGN_KEY_CHECKS=0; TRUNCATE TABLE actors; SET FOREIGN_KEY_CHECKS=1;');
+                $this->actorManager->clear();
                 $this->dbConnection->exec('SET FOREIGN_KEY_CHECKS=0; TRUNCATE TABLE movies; SET FOREIGN_KEY_CHECKS=1;');
 
                 $output->writeln('Truncate complete.');
@@ -129,8 +139,7 @@ class ImportCommand extends Command
                     $actors->next();
 
                     // insert actor into database
-                    $this->dbConnection->insert('actors', array('name' => $actor->getName()));
-                    $actorId = $this->dbConnection->lastInsertId();
+                    $actorId = $this->actorManager->add($actor->getName());
 
                     // insert all titles into database (if not already there)
                     // insert link between actor and title

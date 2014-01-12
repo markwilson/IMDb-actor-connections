@@ -2,7 +2,6 @@
 
 namespace MarkWilson\Manager;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 
 /**
@@ -11,24 +10,12 @@ use Doctrine\DBAL\DBALException;
  * @package MarkWilson\Manager
  * @author  Mark Wilson <mark@89allport.co.uk>
  */
-class CastManager
+class CastManager extends AbstractManager
 {
     /**
-     * Database connection
-     *
-     * @var Connection
+     * Table name
      */
-    private $dbConnection;
-
-    /**
-     * Constructor.
-     *
-     * @param Connection $dbConnection Database connection
-     */
-    public function __construct(Connection $dbConnection)
-    {
-        $this->dbConnection = $dbConnection;
-    }
+    const TABLE_NAME = 'cast';
 
     /**
      * Clear the cast table
@@ -37,7 +24,7 @@ class CastManager
      */
     public function clear()
     {
-        $this->dbConnection->exec('SET FOREIGN_KEY_CHECKS=0; TRUNCATE cast; SET FOREIGN_KEY_CHECKS=1;');
+        parent::clear(self::TABLE_NAME);
     }
 
     /**
@@ -54,7 +41,7 @@ class CastManager
     public function add($actorId, $movieId, $failOnError = false)
     {
         try {
-            $this->dbConnection->insert('cast', array('actor_id' => $actorId, 'movie_id' => $movieId));
+            $this->getDbConnection()->insert(self::TABLE_NAME, array('actor_id' => $actorId, 'movie_id' => $movieId));
         } catch (DBALException $e) {
             if ($failOnError) {
                 throw $e;
@@ -72,6 +59,6 @@ class CastManager
      */
     public function disable($actorId, $movieId)
     {
-        $this->dbConnection->update('cast', array('enabled' => 0), 'actor_id = ' . (int)$actorId . ' AND movie_id = ' . (int)$movieId);
+        $this->getDbConnection()->update('cast', array('enabled' => 0), 'actor_id = ' . (int)$actorId . ' AND movie_id = ' . (int)$movieId);
     }
 }
