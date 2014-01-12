@@ -64,7 +64,7 @@ AND a4.enabled = 1
 
 INNER JOIN actors AS a5
 ON a5.id = m4c2.actor_id
-AND a5.name = 'Ribisi, Giovani'
+AND a5.name = 'Perry, Matthew (I)'
 AND a5.enabled = 1
 
 INNER JOIN movies AS m1
