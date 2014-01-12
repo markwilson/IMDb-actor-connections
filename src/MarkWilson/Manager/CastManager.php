@@ -45,10 +45,27 @@ class CastManager extends AbstractManager
      * @param integer $actorId Actor DB ID
      * @param integer $movieId Movie DB ID
      *
-     * @eeturn void
+     * @return void
+     *
+     * @throws \RuntimeException As not yet implemented
      */
     public function disable($actorId, $movieId)
     {
-        $this->getDbConnection()->update('cast', array('enabled' => 0), 'actor_id = ' . (int)$actorId . ' AND movie_id = ' . (int)$movieId);
+        throw new \RuntimeException('Not yet implemented');
+    }
+
+    /**
+     * Enable this role
+     *
+     * @param integer|string $actorId Actor DB ID
+     * @param integer|string $movieId Movie DB ID
+     *
+     * @return void
+     *
+     * @throws \RuntimeException As not yet implemented
+     */
+    public function enable($actorId, $movieId)
+    {
+        throw new \RuntimeException('Not yet implemented');
     }
 }

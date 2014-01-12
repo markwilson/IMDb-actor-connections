@@ -13,7 +13,7 @@ use Doctrine\DBAL\Connection;
 abstract class AbstractManager
 {
     /**
-     * Table name - must be overridden
+     * Table configuration - must be overridden
      */
     const TABLE_NAME = '';
 

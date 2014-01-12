@@ -10,12 +10,13 @@ use Doctrine\DBAL\DBALException;
  * @package MarkWilson\Manager
  * @author  Mark Wilson <mark@89allport.co.uk>
  */
-class MovieManager extends AbstractManager
+class MovieManager extends SingleKeyManager
 {
     /**
-     * Table name
+     * Table configuration
      */
     const TABLE_NAME = 'movies';
+    const TABLE_KEY  = 'title';
 
     /**
      * Add a new movie
@@ -35,23 +36,5 @@ class MovieManager extends AbstractManager
         }
 
         return $movieId;
-    }
-
-    /**
-     * Disable movie
-     *
-     * @param integer|string $id Movie DB ID
-     *
-     * @return void
-     */
-    public function disable($id)
-    {
-        if (is_int($id)) {
-            $where = array('id' => (int)$id);
-        } else {
-            $where = array('title' => (string)$id);
-        }
-
-        $this->getDbConnection()->update(self::TABLE_NAME, array('enabled' => 0), $where);
     }
 }
