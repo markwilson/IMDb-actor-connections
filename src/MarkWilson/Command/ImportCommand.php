@@ -9,6 +9,7 @@ use MarkWilson\Manager\CastManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -70,6 +71,12 @@ class ImportCommand extends Command
                  'filename',
                  InputArgument::REQUIRED,
                  'Which file should be imported?'
+             )
+             ->addOption(
+                 'truncate',
+                 null,
+                 InputOption::VALUE_NONE,
+                 'If set, truncates all data'
              );
     }
 
@@ -96,12 +103,18 @@ class ImportCommand extends Command
                 throw new \RuntimeException('File is not readable.');
             }
 
-            $output->writeln('Starting import.');
+            if ($input->getOption('truncate')) {
+                $output->writeln('Starting truncate.');
 
-            // clear the current database
-            $this->dbConnection->exec('TRUNCATE TABLE cast');
-            $this->dbConnection->exec('SET FOREIGN_KEY_CHECKS=0; TRUNCATE TABLE actors; SET FOREIGN_KEY_CHECKS=1;');
-            $this->dbConnection->exec('SET FOREIGN_KEY_CHECKS=0; TRUNCATE TABLE movies; SET FOREIGN_KEY_CHECKS=1;');
+                // clear the current database
+                $this->castManager->clear();
+                $this->dbConnection->exec('SET FOREIGN_KEY_CHECKS=0; TRUNCATE TABLE actors; SET FOREIGN_KEY_CHECKS=1;');
+                $this->dbConnection->exec('SET FOREIGN_KEY_CHECKS=0; TRUNCATE TABLE movies; SET FOREIGN_KEY_CHECKS=1;');
+
+                $output->writeln('Truncate complete.');
+            }
+
+            $output->writeln('Starting import.');
 
             $actors = new ActorFileObject($fileName);
 
