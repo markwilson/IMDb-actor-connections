@@ -34,12 +34,18 @@ class ActorManager extends AbstractManager
     /**
      * Disable an actor
      *
-     * @param integer $id Actor DB ID
+     * @param integer|string $id Actor DB ID
      *
      * @return void
      */
     public function disable($id)
     {
-        $this->getDbConnection()->update(self::TABLE_NAME, array('enabled' => 0), 'id = ' . (int)$id);
+        if (is_int($id)) {
+            $where = array('id' => (int)$id);
+        } else {
+            $where = array('name' => (string)$id);
+        }
+
+        $this->getDbConnection()->update(self::TABLE_NAME, array('enabled' => 0), $where);
     }
 }

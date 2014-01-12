@@ -40,12 +40,18 @@ class MovieManager extends AbstractManager
     /**
      * Disable movie
      *
-     * @param integer $id Movie DB ID
+     * @param integer|string $id Movie DB ID
      *
      * @return void
      */
     public function disable($id)
     {
-        $this->getDbConnection()->update(self::TABLE_NAME, array('enabled' => 0), 'id = ' . (int)$id);
+        if (is_int($id)) {
+            $where = array('id' => (int)$id);
+        } else {
+            $where = array('title' => (string)$id);
+        }
+
+        $this->getDbConnection()->update(self::TABLE_NAME, array('enabled' => 0), $where);
     }
 }
