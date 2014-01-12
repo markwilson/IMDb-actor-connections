@@ -5,6 +5,7 @@ namespace MarkWilson\Command;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use MarkWilson\FileObject\ActorFileObject;
+use MarkWilson\Manager\CastManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,17 +35,26 @@ class ImportCommand extends Command
     private $dbConnection;
 
     /**
+     * Cast manager
+     *
+     * @var CastManager
+     */
+    private $castManager;
+
+    /**
      * Constructor.
      *
-     * @param Filesystem $fileSystem   Filesystem instance
-     * @param Connection $dbConnection Database connection
+     * @param Filesystem  $fileSystem   Filesystem instance
+     * @param Connection  $dbConnection Database connection
+     * @param CastManager $castManager  Cast manager
      */
-    public function __construct(Filesystem $fileSystem, Connection $dbConnection)
+    public function __construct(Filesystem $fileSystem, Connection $dbConnection, CastManager $castManager)
     {
         parent::__construct();
 
         $this->fileSystem   = $fileSystem;
         $this->dbConnection = $dbConnection;
+        $this->castManager  = $castManager;
     }
 
     /**
@@ -120,11 +130,7 @@ class ImportCommand extends Command
                             $movieId = $this->dbConnection->fetchColumn('SELECT id FROM movies WHERE title = ?', array($title));
                         }
 
-                        try {
-                            $this->dbConnection->insert('cast', array('actor_id' => $actorId, 'movie_id' => $movieId));
-                        } catch (DBALException $e) {
-                            // possible this is a duplicate so just skip
-                        }
+                        $this->castManager->add($actorId, $movieId);
                     }
 
                     $output->writeln('Imported actor ' . $actor->getName() . '. ' . $actor->getTitles()->count() . ' titles.');
